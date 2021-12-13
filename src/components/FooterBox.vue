@@ -77,9 +77,9 @@ export default {
   margin: 0;
   padding: 0;
   --first-footer: transparent;
-  --second-footer: white;
-  --link-hover: var(--accent-color);
-  --text-color: rgb(255, 255, 255);
+  --second-footer: transparent;
+  --link-hover: white;
+  --text-color: rgb(80, 80, 80);
 }
 
 footer {
@@ -121,6 +121,7 @@ footer {
   font-size: 14px;
   background-color: var(--second-footer);
   color: rgb(0, 0, 0);
+  border-top: 1px solid rgb(255, 255, 255);
 }
 
 @media screen and (max-width: 1200px) {

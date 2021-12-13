@@ -1,0 +1,16 @@
+remotePath="/home/jk/ftpServer/polimochevina.himpost.com/"
+thisFileName="deploy"
+
+echo removing old remote files...
+rm -r $remotePath/* 
+
+echo copying new files...
+cp -r dist/* $remotePath
+
+echo copying additional files...
+
+echo copying mail.php...
+cp mail.php $remotePath
+
+echo copying COMPLETE
+

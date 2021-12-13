@@ -1,32 +1,26 @@
 <script>
 export default {
-  name: "Hamburger",
+  name: "HomeBtn",
 };
 </script>
 
 <template>
   <button>
-    <i class="fa fa-bars" aria-hidden="true"></i>
+    <i class="fa fa-home" aria-hidden="true"></i>
   </button>
 </template>
 
 <style lang="scss" scoped>
-* {
-  --btn-color: #494949;
-  --btn-lighten: rgb(109, 109, 109);
-  --btn-darken: rgb(39, 39, 39);
-}
-
 button {
   color: white;
   font-size: 32px;
   cursor: pointer;
   z-index: 3;
-  // padding: 0.8em 1.4em;
+  // padding: 0.5em;
   border: none;
   background-color: transparent;
   // position: fixed;
-  // right: 0.5em;
+  // left: 0.5em;
   // top: 0.5em;
   /* transition: background-color 200ms ease-in-out; */
 }

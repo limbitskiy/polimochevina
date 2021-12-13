@@ -4,6 +4,7 @@ import { translationsArray } from "@/language/Catalog.js";
 export default {
   name: "Catalog",
   components: {},
+  emits: ["addToCart"],
   props: ["currentLang", "products"],
   data() {
     return {
@@ -16,7 +17,7 @@ export default {
 
 <template>
   <h2 class="section-title">Каталог</h2>
-  <section class="catalog">
+  <div class="catalog">
     <div class="prod-card" v-for="product in this.products" :key="product.id">
       <img :src="require('../assets/' + product.image)" />
       <h3 class="prod-title">{{ product.name[this.currentLang] }}</h3>
@@ -32,25 +33,12 @@ export default {
         </select>
       </div>
       <span class="prod-price">&#8372;{{ product.price[product.select] }}</span>
-      <btn>В корзину</btn>
+      <btn @click="this.$emit('addToCart', product.id)">В корзину</btn>
     </div>
-  </section>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-:root {
-  --custom-shadow: 2.8px 2.8px 2.2px rgba(0, 0, 0, 0.02),
-    6.7px 6.7px 5.3px rgba(0, 0, 0, 0.028),
-    12.5px 12.5px 10px rgba(0, 0, 0, 0.035),
-    22.3px 22.3px 17.9px rgba(0, 0, 0, 0.042),
-    41.8px 41.8px 33.4px rgba(0, 0, 0, 0.05),
-    100px 100px 80px rgba(0, 0, 0, 0.07);
-}
-
-section {
-  margin: 4em 0;
-}
-
 .catalog {
   display: flex;
   flex-wrap: wrap;
@@ -113,6 +101,13 @@ section {
     font-size: 26px;
     font-weight: 500;
     color: black;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .prod-card {
+    width: 320px;
+    padding: 2em 1em;
   }
 }
 </style>
