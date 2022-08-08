@@ -1,5 +1,5 @@
 <script>
-import { translationsArray } from "@/language/Form.js";
+import CommonMethods from "@/mixins/CommonMethods";
 
 export default {
   name: "Form",
@@ -8,10 +8,9 @@ export default {
       name: "",
       tel: "",
       comment: "",
-      translation: translationsArray,
     };
   },
-  props: ["currentLang"],
+  mixins: [CommonMethods],
 };
 </script>
 
@@ -19,34 +18,26 @@ export default {
   <form id="form">
     <div class="form-input-group">
       <label for="name"
-        ><span class="asterisk">*</span>
-        {{ this.translation[this.currentLang].fName }}</label
+        ><span class="asterisk">*</span> {{ localize.fName }}</label
       >
       <input v-model="name" type="text" name="name" />
     </div>
 
     <div class="form-input-group">
       <label for="tel"
-        ><span class="asterisk">*</span
-        >{{ this.translation[this.currentLang].fTel }}</label
+        ><span class="asterisk">*</span>{{ localize.fTel }}</label
       >
       <input v-model="tel" type="tel" name="tel" />
     </div>
 
     <div class="form-input-group">
-      <label for="comment">{{
-        this.translation[this.currentLang].fComment
-      }}</label>
+      <label for="comment">{{ localize.fComment }}</label>
       <textarea v-model="comment" name="comment" rows="3" />
     </div>
   </form>
 </template>
 
 <style lang="scss" scoped>
-* {
-  --input-bg: #fff;
-}
-
 form {
   display: grid;
   grid-gap: 1.6em;
@@ -54,8 +45,7 @@ form {
 
   textarea,
   input {
-    background-color: var(--input-bg);
-    border: none;
+    border: 1px solid var(--lightgrey-color);
     border-radius: 3px;
     padding: 0.8em;
     font-size: 18px;
@@ -75,7 +65,7 @@ form {
     }
   }
   .asterisk {
-    color: rgb(92, 92, 92);
+    color: var(--accent-color2);
   }
   .form-input-group {
     display: grid;

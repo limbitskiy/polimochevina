@@ -11,32 +11,11 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-* {
-  --btn-color: #494949;
-  --btn-lighten: rgb(109, 109, 109);
-  --btn-darken: rgb(39, 39, 39);
-}
-
 button {
-  color: white;
-  font-size: 32px;
+  color: var(--grey-color);
+  font-size: 22px;
   cursor: pointer;
-  z-index: 3;
-  // padding: 0.8em 1.4em;
+  // z-index: 3;
   border: none;
-  background-color: transparent;
-  // position: fixed;
-  // right: 0.5em;
-  // top: 0.5em;
-  /* transition: background-color 200ms ease-in-out; */
-}
-
-button:hover {
-  //   background-color: var(--btn-lighten);
-}
-
-button:active {
-  //   background-color: var(--btn-darken);
-  //   box-shadow: none;
 }
 </style>

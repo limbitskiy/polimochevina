@@ -1,109 +1,73 @@
 <script>
-import FooterBox from "@/components/FooterBox.vue";
+import CommonMethods from "@/mixins/CommonMethods";
+import TheFooter from "@/components/TheFooter.vue";
 import Sidebar from "@/components/Sidebar.vue";
 import Cart from "@/components/Cart.vue";
-import products from "@/products.json";
 
 export default {
   name: "App",
-  components: { FooterBox, Sidebar, Cart },
-  data() {
-    return {
-      cart: [],
-      sidebarOpen: false,
-      products: products,
-      currentLang: 0,
-    };
-  },
+  components: { TheFooter, Sidebar, Cart },
   methods: {
-    addToCart(e) {
-      let prod = this.products.find((item) => {
-        return item.id === e;
-      });
-      if (this.cart.includes(prod)) return;
-      this.cart.push(prod);
-    },
-    removeFromCart(product) {
-      this.cart.quantity = 1;
-      this.cart.splice(this.cart.indexOf(product), 1);
-    },
-    changeQuantity(event) {
-      let e = event[0];
-      let prod = event[1];
-      let thisProduct = this.cart.find((item) => item.id === prod.id);
-      thisProduct.quantity = e.target.value;
-    },
-    changeLang(lang) {
-      this.currentLang = lang;
-    },
-    closeSidebarTimer() {
-      setTimeout(() => {
-        this.sidebarOpen = false;
-      }, 1000);
-    },
-    resetCart() {
-      this.cart = [];
-      this.products.forEach((item) => {
-        item.quantity = 1;
-      });
+    handleScroll() {
+      console.log(window.scrollY);
+      if (window.innerWidth < 768) {
+        this.$store.commit("SET_SHOW_CATALOG", true);
+        this.$store.commit("SET_SHOW_ABOUT", true);
+        this.$store.commit("SET_SHOW_WHY_US", true);
+        this.$store.commit("SET_SHOW_FOOTER", true);
+      }
+      if (window.scrollY > 100) {
+        this.$store.commit("SET_SHOW_CATALOG", true);
+      }
+      if (window.scrollY > 1200 && window.innerWidth > 768) {
+        this.$store.commit("SET_SHOW_ABOUT", true);
+      }
+      // if (window.scrollY > 1830 && window.innerWidth < 768) {
+      //   this.$store.commit("SET_SHOW_ABOUT", true);
+      // }
+      if (window.scrollY > 1500 && window.innerWidth > 768) {
+        this.$store.commit("SET_SHOW_WHY_US", true);
+        this.$store.commit("SET_SHOW_FOOTER", true);
+      }
+      // if (window.scrollY > 3250 && window.innerWidth < 768) {
+      //   this.$store.commit("SET_SHOW_WHY_US", true);
+      //   this.$store.commit("SET_SHOW_FOOTER", true);
+      // }
     },
   },
+  mixins: [CommonMethods],
   computed: {
-    cartLength() {
-      return this.cart.length;
+    showFooter() {
+      return this.$store.state.showFooter;
     },
   },
-  watch: {
-    cartLength() {
-      if (this.cartLength > 0 && !this.sidebarOpen) {
-        this.sidebarOpen = true;
-      }
-      if (this.cartLength === 0) {
-        this.closeSidebarTimer();
-      }
-    },
+  created() {
+    this.$store.dispatch("fetchProducts");
+    this.$store.dispatch("fetchTranslations");
   },
 };
 </script>
 
 <template>
   <header>
-    <router-link to="/">
-      <home-btn />
-    </router-link>
-    <hamburger @click="this.sidebarOpen = true" />
+    <LangSwitch />
+    <hamburger @click="this.$store.commit('SET_SIDEBAROPEN', !sideBarOpen)" />
   </header>
-  <main>
-    <transition name="slide" mode="out-in">
-      <Sidebar
-        v-if="this.sidebarOpen"
-        :currentLang="currentLang"
-        :cart="cart"
-        @hideSidebar="this.sidebarOpen = false"
-      >
-        <Cart
-          :currentLang="currentLang"
-          :products="products"
-          :cart="cart"
-          @removeFromCart="removeFromCart"
-          @changeQuantity="changeQuantity"
-        />
+  <main v-if="translationsLoaded" v-scroll="handleScroll">
+    <transition name="sidebar-slide" mode="out-in">
+      <Sidebar v-if="this.$store.state.sideBarOpen">
+        <Cart />
       </Sidebar>
     </transition>
     <div class="component">
-      <router-view
-        :currentLang="currentLang"
-        :products="products"
-        :cart="cart"
-        @addToCart="addToCart"
-        @hideSidebar="this.sidebarOpen = false"
-        @removeFromCart="removeFromCart"
-        @changeQuantity="changeQuantity"
-        @resetCart="resetCart"
-      ></router-view>
+      <router-view v-slot="{ Component }">
+        <transition name="slide-up" mode="out-in">
+          <component :is="Component" :key="this.$route.path" />
+        </transition>
+      </router-view>
     </div>
   </main>
-  <FooterBox :currentLang="currentLang" />
+  <TheFooter v-if="translationsLoaded && showFooter" />
 </template>
 
 <style lang="scss">
@@ -111,47 +75,101 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  --accent-color: #eab552;
+
+  --nav-height: 50px;
+
+  --accent-color: #333;
+  --accent-color2: #ff7a7a;
+  --accent-color3: #eab552;
+
+  --grey-color: rgb(71, 71, 71);
+  --medium-grey-color: #938e8e;
+  --lightgrey-color: #c4c4c4;
+
+  --font-size-08: 0.8rem;
+  --font-size-15: 1.5rem;
+
+  --font-xsmall: 0.8rem;
+  --font-small: 0.9rem;
 }
+
 #app {
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: rgb(221, 128, 36);
-  background: linear-gradient(
-    144deg,
-    rgba(221, 128, 36, 1) 0%,
-    rgba(237, 194, 93, 1) 100%
-  );
-  color: white;
+  color: var(--grey-color);
   position: relative;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+ol {
+  margin-left: 3vw;
+
+  li::marker {
+    font-weight: 700;
+  }
 }
 
 header {
   position: fixed;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  background-color: #dd8124;
-  border-bottom: 1px solid white;
+  background-color: white;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
   width: 100%;
-  height: 50px;
-  padding: 5px 15px;
+  height: var(--nav-height);
+  padding: 5px 1rem;
+  z-index: 10;
+}
+
+.opaque {
+  opacity: 0;
 }
 
 .container {
-  max-width: 1400px;
-  margin: 0 auto;
+  padding-inline: 1rem;
 }
 
 .small-container {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
+  padding-inline: 5px;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  justify-items: stretch;
 }
 
-section {
+.section {
   padding: 4em 0;
+}
+
+.btn-group {
+  display: flex;
+
+  button:first-of-type {
+    background-color: var(--accent-color2);
+  }
+}
+
+.form-btn-group {
+  justify-content: space-between;
+}
+
+.product-btn-group {
+  gap: 1rem;
+}
+
+.btn-center {
+  justify-content: center;
 }
 
 ::-webkit-scrollbar {
@@ -169,39 +187,94 @@ section {
   }
 }
 
-.section-title {
-  font-size: clamp(1.5em, calc(20px + 1vw), 40px);
+.title-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   text-align: center;
-  color: white;
-  margin-bottom: 1.6em;
+  margin-bottom: 2.5rem;
+}
+
+.section-title {
+  font-size: clamp(1.5rem, calc(20px + 1vw), 3rem);
+  font-weight: 500;
+}
+
+.section-subtitle {
+  font-size: clamp(1rem, calc(1rem + 1vw), 1.3rem);
+  width: 80%;
+  line-height: 26px;
+  color: var(--grey-color);
 }
 
 .component {
-  padding: 8em 0;
-  min-height: 64vh;
+  padding-top: var(--nav-height);
+  min-height: 52vh;
+  display: grid;
+  place-items: center;
 }
 
-.slide-enter-active {
-  animation: slide 0.2s ease-out;
+// animations
+
+// SIDEBAR ANIMATION
+
+.sidebar-slide-enter-active,
+.sidebar-slide-leave-active {
+  transition: transform 0.3s ease;
 }
 
-.slide-leave-active {
-  animation: slide 0.2s ease-out reverse;
+.sidebar-slide-enter-from,
+.sidebar-slide-leave-to {
+  transform: translateX(100%);
 }
 
-@keyframes slide {
-  from {
-    transform: translateX(100%);
+// SLIDE UP
+
+.slide-up-enter-active {
+  transition: opacity 0.3s ease, transform 0.5s ease;
+}
+
+.slide-up-leave-active {
+  transition: opacity 0.1s ease;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+}
+
+// SLIDE RIGHT
+
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(-5%);
+}
+
+.slide-right-enter-to {
+  opacity: 1;
+}
+
+.slide-right-enter-active {
+  transition: opacity 2s ease, transform 1s ease;
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 1400px;
+    margin-inline: auto;
   }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@media screen and (max-width: 800px) {
   .small-container {
-    width: 100%;
-    padding: 0 5px;
+    max-width: 800px;
+    margin-inline: auto;
+  }
+
+  .section-subtitle {
+    width: 80%;
   }
 }
 </style>

@@ -10,9 +10,10 @@ $tel = $_POST['tel'];
 $comment = $_POST['comment'];
 $cart = $_POST['cartData'];
 $total = $_POST['total'];
+$date = date('d/m/Y');
+$time = date('H:i');
 
-
-$message = "Имя заказчика: $name\nТелефон: $tel\nСообщение: $comment\nЗаказ:\n$cart\nСумма заказа: $total грн";
+$message = "Имя заказчика: $name\nТелефон: $tel\nСообщение: $comment\nЗаказ:\n$cart\nСумма заказа: $total грн\nДата заказа: $date\nВремя заказа: $time";
 
 mail($mailTo, $subject, $message, $headers);
 

@@ -11,39 +11,30 @@ export default {
 </template>
 
 <style scoped>
-* {
-  --btn-color: #494949;
-  --btn-lighten: rgb(109, 109, 109);
-  --btn-darken: rgb(39, 39, 39);
-}
-
 button {
   cursor: pointer;
-  font-size: 18px;
-  padding: 0.9em 1.4em;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.7rem 2.25rem;
   border: none;
-  border-radius: 20px;
-  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  /* box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3); */
   color: rgb(255, 255, 255);
   background-color: var(--accent-color);
-  width: 100%;
-  margin: 0;
   transition: 200ms ease-in-out;
 }
 
 button:hover {
-  background-color: #f8c76a;
-  border-color: white;
-  color: rgb(0, 0, 0);
 }
 
 button:active {
   transition: none;
-  background-color: #d3a043;
-  /* color: black; */
-  /* border-color: black; */
   -webkit-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2) inset;
   -moz-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2) inset;
   box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2) inset;
+}
+@media (min-width: 768px) {
+  button {
+    padding: 0.8rem 3rem;
+  }
 }
 </style>
