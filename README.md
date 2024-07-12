@@ -9,6 +9,7 @@
 - vuex
 
 **Screenshots:**
+
 ![polimochevina screenshot 1](/screenshots/1.png)
 ![polimochevina screenshot 2](/screenshots/2.png)
 ![polimochevina screenshot 3](/screenshots/3.png)
