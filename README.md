@@ -7,6 +7,7 @@
 - vue3
 - vue-router
 - vuex
+- php for mailer
 
 **Screenshots:**
 
